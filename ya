@@ -1,1 +1,1189 @@
 
+local lib = {}
+
+function lib:CreateWindow(title)
+	local UI = Instance.new("ScreenGui")
+	local Main = Instance.new("Frame")
+	local UICorner = Instance.new("UICorner")
+	local TopBar = Instance.new("Frame")
+	local Title = Instance.new("TextLabel")
+	local Line = Instance.new("Frame")
+	local Navigation = Instance.new("ScrollingFrame")
+	local UIListLayout = Instance.new("UIListLayout")
+	local UIPadding = Instance.new("UIPadding")
+	local Line_2 = Instance.new("Frame")
+	local ContentContainer = Instance.new("Frame")
+	local ExitButton = Instance.new("ImageButton")
+	local MobileCard = Instance.new("TextButton")
+	local UICorner_Mobile = Instance.new("UICorner")
+
+	-- Theme Palette
+	local AccentColorLeft = Color3.fromRGB(120, 80, 255)
+	local AccentColorRight = Color3.fromRGB(60, 160, 255)
+	local BGColor = Color3.fromRGB(15, 16, 22)
+	local SidebarColor = Color3.fromRGB(10, 11, 14)
+	local BorderColor = Color3.fromRGB(35, 36, 45)
+	local BorderColorHover = Color3.fromRGB(65, 66, 85)
+	local CardColor = Color3.fromRGB(20, 21, 28)
+	local CardColorHover = Color3.fromRGB(25, 27, 36)
+	local TextMain = Color3.fromRGB(255, 255, 255)
+	local TextMuted = Color3.fromRGB(160, 162, 180)
+
+	local TweenService = game:GetService("TweenService")
+
+	local function addStroke(parent, color, thickness, transparency)
+		local stroke = Instance.new("UIStroke")
+		stroke.Color = color or BorderColor
+		stroke.Thickness = thickness or 1
+		stroke.Transparency = transparency or 0
+		stroke.ApplyStrokeMode = Enum.ApplyStrokeMode.Border
+		stroke.LineJoinMode = Enum.LineJoinMode.Round
+		stroke.Parent = parent
+		return stroke
+	end
+
+	local function addGradient(parent, color1, color2)
+		local gradient = Instance.new("UIGradient")
+		gradient.Color = ColorSequence.new({
+			ColorSequenceKeypoint.new(0, color1 or AccentColorLeft),
+			ColorSequenceKeypoint.new(1, color2 or AccentColorRight)
+		})
+		gradient.Parent = parent
+		return gradient
+	end
+
+	UI.Name = "KairoUI"
+	UI.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+	UI.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+	UI.DisplayOrder = 999999999
+	UI.ResetOnSpawn = false
+	UI.IgnoreGuiInset = true
+
+	Main.Name = "Main"
+	Main.Parent = UI
+	Main.BackgroundColor3 = BGColor
+	Main.BackgroundTransparency = 0
+	Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+	
+	local UserInputService = game:GetService("UserInputService")
+	local IsMobile = UserInputService.TouchEnabled
+	local NavWidth = IsMobile and 110 or 160
+	local TopBarHeight = IsMobile and 42 or 52
+	if IsMobile then
+		Main.Size = UDim2.new(0.65, 0, 0.85, 0)
+	else
+		Main.Size = UDim2.new(0.58, 0, 0.58, 0)
+	end
+	
+	Main.AnchorPoint = Vector2.new(0.5, 0.5)
+
+	UICorner.CornerRadius = UDim.new(0, 10)
+	UICorner.Parent = Main
+	addStroke(Main, BorderColor, 1.5)
+
+	-- Navigation Sidebar Background
+	local SidebarBg = Instance.new("Frame")
+	SidebarBg.Name = "SidebarBg"
+	SidebarBg.Parent = Main
+	SidebarBg.BackgroundColor3 = SidebarColor
+	SidebarBg.BorderSizePixel = 0
+	SidebarBg.Position = UDim2.new(0, 0, 0, TopBarHeight)
+	SidebarBg.Size = UDim2.new(0, NavWidth, 1, -TopBarHeight)
+	
+	local SidebarCorner = Instance.new("UICorner")
+	SidebarCorner.CornerRadius = UDim.new(0, 10)
+	SidebarCorner.Parent = SidebarBg
+
+	-- Cover top bar and right side corners of the sidebar
+	local SidebarCover = Instance.new("Frame")
+	SidebarCover.Name = "SidebarCover"
+	SidebarCover.Parent = SidebarBg
+	SidebarCover.BackgroundColor3 = SidebarColor
+	SidebarCover.BorderSizePixel = 0
+	SidebarCover.Position = UDim2.new(0, 0, 0, 0)
+	SidebarCover.Size = UDim2.new(1, 0, 0, 10)
+
+	local SidebarCoverRight = Instance.new("Frame")
+	SidebarCoverRight.Name = "SidebarCoverRight"
+	SidebarCoverRight.Parent = SidebarBg
+	SidebarCoverRight.BackgroundColor3 = SidebarColor
+	SidebarCoverRight.BorderSizePixel = 0
+	SidebarCoverRight.Position = UDim2.new(1, -10, 0, 0)
+	SidebarCoverRight.Size = UDim2.new(0, 10, 1, 0)
+
+	TopBar.Name = "TopBar"
+	TopBar.Parent = Main
+	TopBar.BackgroundColor3 = BGColor
+	TopBar.BackgroundTransparency = 1.000
+	TopBar.Size = UDim2.new(1, 0, 0, TopBarHeight)
+
+	Title.Name = "Title"
+	Title.Parent = TopBar
+	Title.BackgroundTransparency = 1.000
+	Title.Position = UDim2.new(0, 18, 0, 0)
+	Title.Size = UDim2.new(0, 250, 1, 0)
+	Title.Font = Enum.Font.GothamBold
+	Title.Text = title
+	Title.TextColor3 = TextMain
+	Title.TextSize = IsMobile and 17 or 18
+	Title.TextXAlignment = Enum.TextXAlignment.Left
+
+	ExitButton.Name = "ExitButton"
+	ExitButton.Parent = TopBar
+	ExitButton.BackgroundTransparency = 1.000
+	ExitButton.Position = UDim2.new(1, -40, 0.5, -(IsMobile and 12 or 14))
+	ExitButton.Size = UDim2.new(0, IsMobile and 24 or 28, 0, IsMobile and 24 or 28)
+	ExitButton.Image = "rbxassetid://10747384394"
+	ExitButton.ImageColor3 = Color3.fromRGB(240, 80, 80)
+	ExitButton.ImageTransparency = 0.2
+
+	ExitButton.MouseButton1Click:Connect(function()
+		Main.Visible = false
+	end)
+	ExitButton.TouchTap:Connect(function()
+		Main.Visible = false
+	end)
+
+	local MinimizeButton = Instance.new("ImageButton")
+	local MinimizeLine = Instance.new("Frame")
+
+	MinimizeButton.Name = "MinimizeButton"
+	MinimizeButton.Parent = TopBar
+	MinimizeButton.BackgroundTransparency = 1.000
+	MinimizeButton.Position = UDim2.new(1, -(IsMobile and 72 or 78), 0.5, -(IsMobile and 12 or 14))
+	MinimizeButton.Size = UDim2.new(0, IsMobile and 24 or 28, 0, IsMobile and 24 or 28)
+
+	MinimizeLine.Name = "Line"
+	MinimizeLine.Parent = MinimizeButton
+	MinimizeLine.AnchorPoint = Vector2.new(0.5, 0.5)
+	MinimizeLine.BackgroundColor3 = TextMuted
+	MinimizeLine.BorderSizePixel = 0
+	MinimizeLine.Position = UDim2.new(0.5, 0, 0.5, 0)
+	MinimizeLine.Size = UDim2.new(0, 12, 0, 2)
+
+	MinimizeButton.MouseButton1Click:Connect(function()
+		Main.Visible = false
+		local UserInputService = game:GetService("UserInputService")
+		if not UserInputService.TouchEnabled and lib.OnMinimize then
+			pcall(lib.OnMinimize)
+		end
+	end)
+	MinimizeButton.TouchTap:Connect(function()
+		Main.Visible = false
+	end)
+
+	-- Hover effects for Exit / Minimize
+	ExitButton.MouseEnter:Connect(function()
+		TweenService:Create(ExitButton, TweenInfo.new(0.2), {ImageTransparency = 0, Size = UDim2.new(0, IsMobile and 26 or 30, 0, IsMobile and 26 or 30), Position = UDim2.new(1, -41, 0.5, -(IsMobile and 13 or 15))}):Play()
+	end)
+	ExitButton.MouseLeave:Connect(function()
+		TweenService:Create(ExitButton, TweenInfo.new(0.2), {ImageTransparency = 0.2, Size = UDim2.new(0, IsMobile and 24 or 28, 0, IsMobile and 24 or 28), Position = UDim2.new(1, -40, 0.5, -(IsMobile and 12 or 14))}):Play()
+	end)
+	MinimizeButton.MouseEnter:Connect(function()
+		TweenService:Create(MinimizeLine, TweenInfo.new(0.2), {BackgroundColor3 = TextMain}):Play()
+	end)
+	MinimizeButton.MouseLeave:Connect(function()
+		TweenService:Create(MinimizeLine, TweenInfo.new(0.2), {BackgroundColor3 = TextMuted}):Play()
+	end)
+
+	Line.Name = "Line"
+	Line.Parent = Main
+	Line.BackgroundColor3 = BorderColor
+	Line.BackgroundTransparency = 0
+	Line.BorderSizePixel = 0
+	Line.Position = UDim2.new(0, 0, 0, TopBarHeight)
+	Line.Size = UDim2.new(1, 0, 0, 1)
+
+	Navigation.Name = "Navigation"
+	Navigation.Parent = Main
+	Navigation.Active = true
+	Navigation.BackgroundTransparency = 1.000
+	Navigation.ScrollBarThickness = 0
+	Navigation.Position = UDim2.new(0, 0, 0, TopBarHeight + 1)
+	Navigation.Size = UDim2.new(0, NavWidth, 1, -(TopBarHeight + 1))
+	Navigation.AutomaticCanvasSize = Enum.AutomaticSize.Y
+
+	UIListLayout.Parent = Navigation
+	UIListLayout.HorizontalAlignment = Enum.HorizontalAlignment.Center
+	UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+	UIListLayout.Padding = UDim.new(0, 6)
+
+	UIPadding.Parent = Navigation
+	UIPadding.PaddingTop = UDim.new(0, 10)
+
+	Line_2.Name = "Line"
+	Line_2.Parent = Main
+	Line_2.BackgroundColor3 = BorderColor
+	Line_2.BackgroundTransparency = 0
+	Line_2.BorderSizePixel = 0
+	Line_2.Position = UDim2.new(0, NavWidth, 0, TopBarHeight + 1)
+	Line_2.Size = UDim2.new(0, 1, 1, -(TopBarHeight + 1))
+
+	ContentContainer.Name = "ContentContainer"
+	ContentContainer.Parent = Main
+	ContentContainer.BackgroundTransparency = 1.000
+	ContentContainer.Position = UDim2.new(0, NavWidth + 1, 0, TopBarHeight + 1)
+	ContentContainer.Size = UDim2.new(1, -(NavWidth + 1), 1, -(TopBarHeight + 1))
+
+	MobileCard.Name = "MobileCard"
+	MobileCard.Parent = UI
+	MobileCard.BackgroundColor3 = BGColor
+	MobileCard.BackgroundTransparency = 0
+	MobileCard.BorderSizePixel = 0
+	MobileCard.Position = UDim2.new(0.05, 0, 0.05, 0)
+	MobileCard.Size = UDim2.new(0, 110, 0, 42)
+	MobileCard.AutoButtonColor = false
+	MobileCard.Text = "Aero"
+	MobileCard.TextColor3 = TextMain
+	MobileCard.Font = Enum.Font.GothamBold
+	MobileCard.TextSize = 16
+
+	UICorner_Mobile.CornerRadius = UDim.new(0, 8)
+	UICorner_Mobile.Parent = MobileCard
+	addStroke(MobileCard, BorderColor, 1.5)
+	
+	local MobileGradient = addGradient(MobileCard)
+
+	MinimizeButton.Visible = true
+	MobileCard.Visible = false
+
+	Main:GetPropertyChangedSignal("Visible"):Connect(function()
+		if Main.Visible then
+			MobileCard.Visible = false
+		else
+			MobileCard.Visible = UserInputService.TouchEnabled
+		end
+	end)
+
+	MobileCard.MouseButton1Click:Connect(function()
+		Main.Visible = true
+	end)
+	MobileCard.TouchTap:Connect(function()
+		Main.Visible = true
+	end)
+
+	-- Dragging Functionality
+	local dragging, dragInput, dragStart, startPos
+	local function update(input)
+		local delta = input.Position - dragStart
+		Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+	end
+
+	TopBar.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			dragging = true
+			dragStart = input.Position
+			startPos = Main.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					dragging = false
+				end
+			end)
+		end
+	end)
+
+	TopBar.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			dragInput = input
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if input == dragInput and dragging then
+			update(input)
+		end
+	end)
+
+	local mDragging, mDragInput, mDragStart, mStartPos
+	local function updateMobile(input)
+		local delta = input.Position - mDragStart
+		MobileCard.Position = UDim2.new(mStartPos.X.Scale, mStartPos.X.Offset + delta.X, mStartPos.Y.Scale, mStartPos.Y.Offset + delta.Y)
+	end
+
+	MobileCard.InputBegan:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+			mDragging = true
+			mDragStart = input.Position
+			mStartPos = MobileCard.Position
+			input.Changed:Connect(function()
+				if input.UserInputState == Enum.UserInputState.End then
+					mDragging = false
+				end
+			end)
+		end
+	end)
+
+	MobileCard.InputChanged:Connect(function(input)
+		if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
+			mDragInput = input
+		end
+	end)
+
+	UserInputService.InputChanged:Connect(function(input)
+		if input == mDragInput and mDragging then
+			updateMobile(input)
+		end
+	end)
+
+	local tabs = {}
+
+	function lib:CreateTab(title, iconId)
+		local TabBtn = Instance.new("TextButton")
+		local UICorner_Tab = Instance.new("UICorner")
+		local Icon = Instance.new("ImageLabel")
+		local TabFrame = Instance.new("Frame")
+		
+		-- Tab Header Backdrop / watermark label ("Cool Back Label")
+		local BackLabel = Instance.new("TextLabel")
+		local HeaderTitle = Instance.new("TextLabel")
+		local HeaderLine = Instance.new("Frame")
+
+		local SubTabBar = Instance.new("ScrollingFrame")
+		local SubTabListLayout = Instance.new("UIListLayout")
+		local SubTabPadding = Instance.new("UIPadding")
+		local ElementsContainer = Instance.new("Frame")
+
+		TabBtn.Name = title
+		TabBtn.Parent = Navigation
+		TabBtn.BackgroundColor3 = ActiveColor
+		TabBtn.BackgroundTransparency = 1.000
+		TabBtn.Size = UDim2.new(0.9, 0, 0, IsMobile and 34 or 38)
+		TabBtn.Font = Enum.Font.GothamMedium
+		TabBtn.Text = "   " .. title
+		TabBtn.TextColor3 = TextMain
+		TabBtn.TextSize = IsMobile and 12 or 13
+		TabBtn.TextTransparency = 0.4
+		TabBtn.TextXAlignment = Enum.TextXAlignment.Left
+		TabBtn.AutoButtonColor = false
+
+		UICorner_Tab.CornerRadius = UDim.new(0, 6)
+		UICorner_Tab.Parent = TabBtn
+
+		if iconId then
+			Icon.Parent = TabBtn
+			Icon.BackgroundTransparency = 1.000
+			Icon.Position = UDim2.new(0, IsMobile and 8 or 12, 0.5, -8)
+			Icon.Size = UDim2.new(0, IsMobile and 15 or 16, 0, IsMobile and 15 or 16)
+			Icon.Image = iconId
+			Icon.ImageColor3 = TextMain
+			Icon.ImageTransparency = 0.4
+			TabBtn.Text = "         " .. title
+		end
+
+		TabFrame.Name = title .. "_Frame"
+		TabFrame.Parent = ContentContainer
+		TabFrame.Size = UDim2.new(1, 0, 1, 0)
+		TabFrame.BackgroundTransparency = 1
+		TabFrame.Visible = false
+
+		-- Beautiful Back Label / Watermark
+		BackLabel.Name = "BackLabel"
+		BackLabel.Parent = TabFrame
+		BackLabel.BackgroundTransparency = 1
+		BackLabel.Position = UDim2.new(0, 15, 0, 5)
+		BackLabel.Size = UDim2.new(1, -30, 0, 50)
+		BackLabel.Font = Enum.Font.GothamBold
+		BackLabel.Text = string.upper(title)
+		BackLabel.TextColor3 = TextMain
+		BackLabel.TextSize = 40
+		BackLabel.TextTransparency = 0.94
+		BackLabel.TextXAlignment = Enum.TextXAlignment.Left
+		BackLabel.ZIndex = 1
+
+		HeaderTitle.Name = "HeaderTitle"
+		HeaderTitle.Parent = TabFrame
+		HeaderTitle.BackgroundTransparency = 1
+		HeaderTitle.Position = UDim2.new(0, 18, 0, 15)
+		HeaderTitle.Size = UDim2.new(1, -36, 0, 24)
+		HeaderTitle.Font = Enum.Font.GothamBold
+		HeaderTitle.Text = title
+		HeaderTitle.TextColor3 = TextMain
+		HeaderTitle.TextSize = 18
+		HeaderTitle.TextXAlignment = Enum.TextXAlignment.Left
+		HeaderTitle.ZIndex = 2
+
+		HeaderLine.Name = "HeaderLine"
+		HeaderLine.Parent = TabFrame
+		HeaderLine.BackgroundColor3 = TextMain
+		HeaderLine.BorderSizePixel = 0
+		HeaderLine.Position = UDim2.new(0, 18, 0, 42)
+		HeaderLine.Size = UDim2.new(0, 32, 0, 2)
+		HeaderLine.ZIndex = 2
+		addGradient(HeaderLine)
+
+		SubTabBar.Name = "SubTabBar"
+		SubTabBar.Parent = TabFrame
+		SubTabBar.BackgroundTransparency = 1
+		SubTabBar.Size = UDim2.new(1, 0, 0, IsMobile and 32 or 35)
+		SubTabBar.ScrollBarThickness = 0
+		SubTabBar.CanvasSize = UDim2.new(2, 0, 0, 0)
+		SubTabBar.Position = UDim2.new(0, 0, 0, 48)
+
+		SubTabListLayout.Parent = SubTabBar
+		SubTabListLayout.FillDirection = Enum.FillDirection.Horizontal
+		SubTabListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+		SubTabListLayout.Padding = UDim.new(0, 18)
+
+		SubTabPadding.Parent = SubTabBar
+		SubTabPadding.PaddingLeft = UDim.new(0, 18)
+		SubTabPadding.PaddingTop = UDim.new(0, 8)
+
+		ElementsContainer.Name = "ElementsContainer"
+		ElementsContainer.Parent = TabFrame
+		ElementsContainer.BackgroundTransparency = 1
+		ElementsContainer.Position = UDim2.new(0, 0, 0, IsMobile and 82 or 90)
+		ElementsContainer.Size = UDim2.new(1, 0, 1, -(IsMobile and 82 or 90))
+
+		table.insert(tabs, {Button = TabBtn, Frame = TabFrame, Icon = Icon})
+
+		TabBtn.MouseButton1Click:Connect(function()
+			for _, t in ipairs(tabs) do
+				TweenService:Create(t.Button, TweenInfo.new(0.2), {BackgroundTransparency = 1, TextTransparency = 0.4}):Play()
+				if t.Icon then
+					TweenService:Create(t.Icon, TweenInfo.new(0.2), {ImageTransparency = 0.4}):Play()
+				end
+				t.Frame.Visible = false
+			end
+			TweenService:Create(TabBtn, TweenInfo.new(0.2), {BackgroundTransparency = 0.4, TextTransparency = 0}):Play()
+			if iconId then
+				TweenService:Create(Icon, TweenInfo.new(0.2), {ImageTransparency = 0}):Play()
+			end
+			TabFrame.Visible = true
+		end)
+
+		local TabObject = {
+			Container = ElementsContainer,
+			TabBar = SubTabBar,
+			SubTabs = {}
+		}
+
+		function TabObject:CreateSubTab(subTitle)
+			local SubBtn = Instance.new("TextButton")
+			local IndicatorLine = Instance.new("Frame")
+			local SubCanvas = Instance.new("ScrollingFrame")
+			local SubList = Instance.new("UIListLayout")
+			local SubPad = Instance.new("UIPadding")
+
+			SubBtn.Name = subTitle
+			SubBtn.Parent = self.TabBar
+			SubBtn.BackgroundTransparency = 1
+			SubBtn.Size = UDim2.new(0, 0, 1, 0)
+			SubBtn.AutomaticSize = Enum.AutomaticSize.X
+			SubBtn.Font = Enum.Font.GothamMedium
+			SubBtn.Text = subTitle
+			SubBtn.TextColor3 = TextMuted
+			SubBtn.TextSize = 13.000
+
+			IndicatorLine.Parent = SubBtn
+			IndicatorLine.BorderSizePixel = 0
+			IndicatorLine.Position = UDim2.new(0, 0, 1, -2)
+			IndicatorLine.Size = UDim2.new(1, 0, 0, 2)
+			IndicatorLine.BackgroundTransparency = 1
+			addGradient(IndicatorLine)
+
+			SubCanvas.Name = subTitle .. "_Canvas"
+			SubCanvas.Parent = self.Container
+			SubCanvas.BackgroundTransparency = 1
+			SubCanvas.Size = UDim2.new(1, 0, 1, 0)
+			SubCanvas.ScrollBarThickness = 2
+			SubCanvas.ScrollBarImageColor3 = BorderColor
+			SubCanvas.AutomaticCanvasSize = Enum.AutomaticSize.Y
+			SubCanvas.Visible = false
+
+			SubList.Parent = SubCanvas
+			SubList.HorizontalAlignment = Enum.HorizontalAlignment.Center
+			SubList.SortOrder = Enum.SortOrder.LayoutOrder
+			SubList.Padding = UDim.new(0, 8)
+
+			SubPad.Parent = SubCanvas
+			SubPad.PaddingTop = UDim.new(0, 6)
+			SubPad.PaddingBottom = UDim.new(0, 20)
+
+			table.insert(self.SubTabs, {Button = SubBtn, Canvas = SubCanvas, Line = IndicatorLine})
+
+			SubBtn.MouseButton1Click:Connect(function()
+				for _, st in ipairs(self.SubTabs) do
+					st.Canvas.Visible = false
+					TweenService:Create(st.Button, TweenInfo.new(0.2), {TextColor3 = TextMuted}):Play()
+					TweenService:Create(st.Line, TweenInfo.new(0.2), {BackgroundTransparency = 1}):Play()
+				end
+				SubCanvas.Visible = true
+				TweenService:Create(SubBtn, TweenInfo.new(0.2), {TextColor3 = TextMain}):Play()
+				TweenService:Create(IndicatorLine, TweenInfo.new(0.2), {BackgroundTransparency = 0}):Play()
+			end)
+
+			if #self.SubTabs == 1 then
+				SubCanvas.Visible = true
+				SubBtn.TextColor3 = TextMain
+				IndicatorLine.BackgroundTransparency = 0
+			end
+
+			return SubCanvas
+		end
+
+		if #tabs == 1 then
+			TabFrame.Visible = true
+			TabBtn.BackgroundTransparency = 0.4
+			TabBtn.TextTransparency = 0
+			if iconId then Icon.ImageTransparency = 0 end
+		end
+
+		return TabObject
+	end
+
+	function lib:CreateToggle(title, ParentCanvas, callback)
+		local ToggleFrame = Instance.new("Frame")
+		local UICorner_Toggle = Instance.new("UICorner")
+		local TitleLabel = Instance.new("TextLabel")
+		local Pill = Instance.new("Frame")
+		local PillCorner = Instance.new("UICorner")
+		local Indicator = Instance.new("Frame")
+		local IndicatorCorner = Instance.new("UICorner")
+		local Button = Instance.new("TextButton")
+
+		ToggleFrame.Name = "Toggle"
+		ToggleFrame.Parent = ParentCanvas
+		ToggleFrame.BackgroundColor3 = CardColor
+		ToggleFrame.BackgroundTransparency = 0
+		ToggleFrame.Size = UDim2.new(0.94, 0, 0, IsMobile and 38 or 44)
+
+		UICorner_Toggle.CornerRadius = UDim.new(0, 8)
+		UICorner_Toggle.Parent = ToggleFrame
+		local stroke = addStroke(ToggleFrame, BorderColor, 1)
+
+		TitleLabel.Name = "Title"
+		TitleLabel.Parent = ToggleFrame
+		TitleLabel.BackgroundTransparency = 1.000
+		TitleLabel.Position = UDim2.new(0, 12, 0, 0)
+		TitleLabel.Size = UDim2.new(0.7, 0, 1, 0)
+		TitleLabel.Font = Enum.Font.GothamMedium
+		TitleLabel.Text = title
+		TitleLabel.TextColor3 = TextMuted
+		TitleLabel.TextSize = IsMobile and 13 or 14
+		TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+		Pill.Name = "Pill"
+		Pill.Parent = ToggleFrame
+		Pill.BackgroundColor3 = Color3.fromRGB(35, 36, 44)
+		Pill.Position = UDim2.new(1, -(IsMobile and 48 or 52), 0.5, -(IsMobile and 8 or 10))
+		Pill.Size = UDim2.new(0, IsMobile and 34 or 38, 0, IsMobile and 16 or 20)
+
+		PillCorner.CornerRadius = UDim.new(1, 0)
+		PillCorner.Parent = Pill
+		local pillStroke = addStroke(Pill, Color3.fromRGB(50, 52, 64), 1)
+
+		Indicator.Name = "Indicator"
+		Indicator.Parent = Pill
+		Indicator.BackgroundColor3 = TextMuted
+		Indicator.Position = UDim2.new(0, 2, 0.5, 0)
+		Indicator.Size = UDim2.new(0, IsMobile and 12 or 16, 0, IsMobile and 12 or 16)
+		Indicator.AnchorPoint = Vector2.new(0, 0.5)
+
+		IndicatorCorner.CornerRadius = UDim.new(1, 0)
+		IndicatorCorner.Parent = Indicator
+
+		local IndicatorGradient = addGradient(Indicator)
+
+		Button.Parent = ToggleFrame
+		Button.BackgroundTransparency = 1
+		Button.Size = UDim2.new(1, 0, 1, 0)
+		Button.Text = ""
+
+		local active = false
+
+		local ToggleObject = {}
+		function ToggleObject:Set(state)
+			active = state
+			if active then
+				TweenService:Create(Indicator, TweenInfo.new(0.2), {Position = UDim2.new(1, IsMobile and -14 or -18, 0.5, 0)}):Play()
+				TweenService:Create(Pill, TweenInfo.new(0.2), {BackgroundColor3 = AccentColorLeft}):Play()
+				TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMain}):Play()
+				TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColorHover}):Play()
+				IndicatorGradient.Enabled = true
+			else
+				TweenService:Create(Indicator, TweenInfo.new(0.2), {Position = UDim2.new(0, 2, 0.5, 0)}):Play()
+				TweenService:Create(Pill, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 36, 44)}):Play()
+				TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMuted}):Play()
+				TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColor}):Play()
+				IndicatorGradient.Enabled = false
+			end
+			callback(active)
+		end
+		
+		function ToggleObject:Get()
+			return active
+		end
+
+		Button.MouseButton1Click:Connect(function()
+			ToggleObject:Set(not active)
+		end)
+
+		ToggleFrame.MouseEnter:Connect(function()
+			TweenService:Create(ToggleFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColorHover}):Play()
+			if not active then
+				TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColorHover}):Play()
+			end
+		end)
+
+		ToggleFrame.MouseLeave:Connect(function()
+			TweenService:Create(ToggleFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColor}):Play()
+			if not active then
+				TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColor}):Play()
+			end
+		end)
+
+		return ToggleObject
+	end
+
+	function lib:CreateButton(title, ParentCanvas, callback)
+		local ButtonFrame = Instance.new("Frame")
+		local UICorner_Btn = Instance.new("UICorner")
+		local TitleLabel = Instance.new("TextLabel")
+		local Button = Instance.new("TextButton")
+		local ArrowLabel = Instance.new("TextLabel")
+
+		ButtonFrame.Name = "Button"
+		ButtonFrame.Parent = ParentCanvas
+		ButtonFrame.BackgroundColor3 = CardColor
+		ButtonFrame.BackgroundTransparency = 0
+		ButtonFrame.Size = UDim2.new(0.94, 0, 0, IsMobile and 38 or 44)
+
+		UICorner_Btn.CornerRadius = UDim.new(0, 8)
+		UICorner_Btn.Parent = ButtonFrame
+		local stroke = addStroke(ButtonFrame, BorderColor, 1)
+
+		TitleLabel.Name = "Title"
+		TitleLabel.Parent = ButtonFrame
+		TitleLabel.BackgroundTransparency = 1
+		TitleLabel.Position = UDim2.new(0, 12, 0, 0)
+		TitleLabel.Size = UDim2.new(0.8, 0, 1, 0)
+		TitleLabel.Font = Enum.Font.GothamMedium
+		TitleLabel.Text = title
+		TitleLabel.TextColor3 = TextMuted
+		TitleLabel.TextSize = IsMobile and 13 or 14
+		TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+		ArrowLabel.Parent = ButtonFrame
+		ArrowLabel.BackgroundTransparency = 1
+		ArrowLabel.Position = UDim2.new(1, -30, 0, 0)
+		ArrowLabel.Size = UDim2.new(0, 20, 1, 0)
+		ArrowLabel.Font = Enum.Font.GothamBold
+		ArrowLabel.Text = "›"
+		ArrowLabel.TextColor3 = AccentColorRight
+		ArrowLabel.TextSize = 20
+
+		local ArrowGradient = addGradient(ArrowLabel)
+
+		Button.Parent = ButtonFrame
+		Button.BackgroundTransparency = 1
+		Button.Size = UDim2.new(1, 0, 1, 0)
+		Button.Text = ""
+
+		local function clickAnimation()
+			local origSize = UDim2.new(0.94, 0, 0, IsMobile and 38 or 44)
+			local pressSize = UDim2.new(0.92, 0, 0, IsMobile and 36 or 42)
+			
+			TweenService:Create(ButtonFrame, TweenInfo.new(0.08, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+				Size = pressSize,
+				BackgroundColor3 = AccentColorLeft
+			}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.08), {TextColor3 = TextMain}):Play()
+
+			task.delay(0.08, function()
+				TweenService:Create(ButtonFrame, TweenInfo.new(0.15, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {
+					Size = origSize,
+					BackgroundColor3 = CardColorHover
+				}):Play()
+				TweenService:Create(TitleLabel, TweenInfo.new(0.15), {TextColor3 = TextMuted}):Play()
+			end)
+		end
+
+		Button.MouseButton1Click:Connect(function()
+			clickAnimation()
+			if callback then callback() end
+		end)
+		Button.TouchTap:Connect(function()
+			clickAnimation()
+			if callback then callback() end
+		end)
+
+		ButtonFrame.MouseEnter:Connect(function()
+			TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColorHover}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColorHover}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMain}):Play()
+		end)
+
+		ButtonFrame.MouseLeave:Connect(function()
+			TweenService:Create(ButtonFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColor}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColor}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMuted}):Play()
+		end)
+	end
+
+	function lib:CreateSlider(title, ParentCanvas, min, max, default, callback)
+		local SliderFrame = Instance.new("Frame")
+		local UICorner_Sld = Instance.new("UICorner")
+		local TitleLabel = Instance.new("TextLabel")
+		local ValueLabel = Instance.new("TextLabel")
+		local TrackBack = Instance.new("Frame")
+		local UICorner_Track = Instance.new("UICorner")
+		local Fill = Instance.new("Frame")
+		local UICorner_Fill = Instance.new("UICorner")
+		local Handle = Instance.new("Frame")
+		local UICorner_Handle = Instance.new("UICorner")
+		local Button = Instance.new("TextButton")
+
+		SliderFrame.Name = "Slider"
+		SliderFrame.Parent = ParentCanvas
+		SliderFrame.BackgroundColor3 = CardColor
+		SliderFrame.BackgroundTransparency = 0
+		SliderFrame.Size = UDim2.new(0.94, 0, 0, IsMobile and 48 or 54)
+
+		UICorner_Sld.CornerRadius = UDim.new(0, 8)
+		UICorner_Sld.Parent = SliderFrame
+		local stroke = addStroke(SliderFrame, BorderColor, 1)
+
+		TitleLabel.Name = "Title"
+		TitleLabel.Parent = SliderFrame
+		TitleLabel.BackgroundTransparency = 1
+		TitleLabel.Position = UDim2.new(0, 12, 0, 0)
+		TitleLabel.Size = UDim2.new(0.6, 0, 0, IsMobile and 24 or 28)
+		TitleLabel.Font = Enum.Font.GothamMedium
+		TitleLabel.Text = title
+		TitleLabel.TextColor3 = TextMuted
+		TitleLabel.TextSize = IsMobile and 13 or 14
+		TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+		ValueLabel.Name = "Value"
+		ValueLabel.Parent = SliderFrame
+		ValueLabel.BackgroundTransparency = 1
+		ValueLabel.Position = UDim2.new(1, -50, 0, 0)
+		ValueLabel.Size = UDim2.new(0, 38, 0, IsMobile and 24 or 28)
+		ValueLabel.Font = Enum.Font.GothamMedium
+		ValueLabel.Text = tostring(default)
+		ValueLabel.TextColor3 = AccentColorRight
+		ValueLabel.TextSize = 13
+		ValueLabel.TextXAlignment = Enum.TextXAlignment.Right
+
+		local ValueGradient = addGradient(ValueLabel)
+
+		TrackBack.Name = "TrackBack"
+		TrackBack.Parent = SliderFrame
+		TrackBack.BackgroundColor3 = Color3.fromRGB(35, 36, 44)
+		TrackBack.BorderSizePixel = 0
+		TrackBack.Position = UDim2.new(0, 12, 0, IsMobile and 30 or 36)
+		TrackBack.Size = UDim2.new(1, -24, 0, 4)
+
+		UICorner_Track.CornerRadius = UDim.new(1, 0)
+		UICorner_Track.Parent = TrackBack
+
+		Fill.Name = "Fill"
+		Fill.Parent = TrackBack
+		Fill.BackgroundColor3 = TextMain
+		Fill.BorderSizePixel = 0
+		Fill.Size = UDim2.new(0, 0, 1, 0)
+
+		UICorner_Fill.CornerRadius = UDim.new(1, 0)
+		UICorner_Fill.Parent = Fill
+		addGradient(Fill)
+
+		Handle.Name = "Handle"
+		Handle.Parent = TrackBack
+		Handle.BackgroundColor3 = TextMain
+		Handle.BorderSizePixel = 0
+		Handle.AnchorPoint = Vector2.new(0.5, 0.5)
+		Handle.Position = UDim2.new(0, 0, 0.5, 0)
+		Handle.Size = UDim2.new(0, 12, 0, 12)
+
+		UICorner_Handle.CornerRadius = UDim.new(1, 0)
+		UICorner_Handle.Parent = Handle
+		addStroke(Handle, BorderColor, 1)
+
+		Button.Parent = SliderFrame
+		Button.BackgroundTransparency = 1
+		Button.Size = UDim2.new(1, 0, 1, 0)
+		Button.Text = ""
+		Button.ZIndex = 5
+
+		local currentValue = default
+		local isDragging = false
+
+		local function updateSlider(customPct)
+			local pct = customPct or math.clamp((currentValue - min) / (max - min), 0, 1)
+			Fill.Size = UDim2.new(pct, 0, 1, 0)
+			Handle.Position = UDim2.new(pct, 0, 0.5, 0)
+			local displayValue = math.floor(currentValue * 10 + 0.5) / 10
+			ValueLabel.Text = tostring(displayValue)
+			if callback then callback(displayValue) end
+		end
+
+		local function processInput(input)
+			local trackX = TrackBack.AbsolutePosition.X
+			local trackW = TrackBack.AbsoluteSize.X
+			local pct = math.clamp((input.Position.X - trackX) / trackW, 0, 1)
+			currentValue = min + pct * (max - min)
+			updateSlider(pct)
+		end
+
+		Button.InputBegan:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				isDragging = true
+				TweenService:Create(Handle, TweenInfo.new(0.15), {Size = UDim2.new(0, 16, 0, 16)}):Play()
+				processInput(input)
+			end
+		end)
+
+		UserInputService.InputChanged:Connect(function(input)
+			if isDragging and (input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch) then
+				processInput(input)
+			end
+		end)
+
+		UserInputService.InputEnded:Connect(function(input)
+			if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
+				isDragging = false
+				TweenService:Create(Handle, TweenInfo.new(0.15), {Size = UDim2.new(0, 12, 0, 12)}):Play()
+			end
+		end)
+
+		SliderFrame.MouseEnter:Connect(function()
+			TweenService:Create(SliderFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColorHover}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColorHover}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMain}):Play()
+		end)
+
+		SliderFrame.MouseLeave:Connect(function()
+			TweenService:Create(SliderFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColor}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColor}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMuted}):Play()
+		end)
+
+		currentValue = default
+		updateSlider()
+
+		local SliderObject = {}
+		function SliderObject:Set(val)
+			currentValue = math.clamp(val, min, max)
+			updateSlider()
+		end
+		
+		function SliderObject:Get()
+			return currentValue
+		end
+		return SliderObject
+	end
+
+	function lib:CreateDropdown(title, ParentCanvas, options, callback)
+		local DropFrame = Instance.new("Frame")
+		local UICorner_Drop = Instance.new("UICorner")
+		local TitleLabel = Instance.new("TextLabel")
+		local SelectedLabel = Instance.new("TextLabel")
+		local ArrowLabel = Instance.new("TextLabel")
+		local OptionHolder = Instance.new("Frame")
+		local UICorner_Opts = Instance.new("UICorner")
+		local UIListLayout_Opts = Instance.new("UIListLayout")
+		local Button = Instance.new("TextButton")
+
+		DropFrame.Name = "Dropdown"
+		DropFrame.Parent = ParentCanvas
+		DropFrame.BackgroundColor3 = CardColor
+		DropFrame.BackgroundTransparency = 0
+		DropFrame.Size = UDim2.new(0.94, 0, 0, IsMobile and 38 or 44)
+		DropFrame.ClipsDescendants = false
+		DropFrame.ZIndex = 10
+
+		UICorner_Drop.CornerRadius = UDim.new(0, 8)
+		UICorner_Drop.Parent = DropFrame
+		local stroke = addStroke(DropFrame, BorderColor, 1)
+
+		TitleLabel.Name = "Title"
+		TitleLabel.Parent = DropFrame
+		TitleLabel.BackgroundTransparency = 1
+		TitleLabel.Position = UDim2.new(0, 12, 0, 0)
+		TitleLabel.Size = UDim2.new(0.5, 0, 1, 0)
+		TitleLabel.Font = Enum.Font.GothamMedium
+		TitleLabel.Text = title
+		TitleLabel.TextColor3 = TextMuted
+		TitleLabel.TextSize = 13
+		TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+		TitleLabel.ZIndex = 10
+
+		SelectedLabel.Name = "Selected"
+		SelectedLabel.Parent = DropFrame
+		SelectedLabel.BackgroundTransparency = 1
+		SelectedLabel.Position = UDim2.new(0.5, 0, 0, 0)
+		SelectedLabel.Size = UDim2.new(0.4, 0, 1, 0)
+		SelectedLabel.Font = Enum.Font.GothamMedium
+		SelectedLabel.Text = options[1] or ""
+		SelectedLabel.TextColor3 = AccentColorRight
+		SelectedLabel.TextSize = 13
+		SelectedLabel.TextXAlignment = Enum.TextXAlignment.Right
+		SelectedLabel.ZIndex = 10
+
+		local SelectedGradient = addGradient(SelectedLabel)
+
+		ArrowLabel.Name = "Arrow"
+		ArrowLabel.Parent = DropFrame
+		ArrowLabel.BackgroundTransparency = 1
+		ArrowLabel.Position = UDim2.new(1, -25, 0, 0)
+		ArrowLabel.Size = UDim2.new(0, 20, 1, 0)
+		ArrowLabel.Font = Enum.Font.SourceSansBold
+		ArrowLabel.Text = "⌄"
+		ArrowLabel.TextColor3 = AccentColorRight
+		ArrowLabel.TextSize = 15
+		ArrowLabel.ZIndex = 10
+
+		local ArrowGradient = addGradient(ArrowLabel)
+
+		OptionHolder.Name = "OptionHolder"
+		OptionHolder.Parent = DropFrame
+		OptionHolder.BackgroundColor3 = Color3.fromRGB(15, 16, 22)
+		OptionHolder.BorderSizePixel = 0
+		OptionHolder.Position = UDim2.new(0, 0, 1, 4)
+		OptionHolder.Size = UDim2.new(1, 0, 0, 0)
+		OptionHolder.Visible = false
+		OptionHolder.ZIndex = 20
+		OptionHolder.ClipsDescendants = true
+
+		UICorner_Opts.CornerRadius = UDim.new(0, 8)
+		UICorner_Opts.Parent = OptionHolder
+		local optsStroke = addStroke(OptionHolder, BorderColor, 1)
+
+		UIListLayout_Opts.Parent = OptionHolder
+		UIListLayout_Opts.HorizontalAlignment = Enum.HorizontalAlignment.Center
+		UIListLayout_Opts.SortOrder = Enum.SortOrder.LayoutOrder
+		UIListLayout_Opts.Padding = UDim.new(0, 2)
+
+		Button.Parent = DropFrame
+		Button.BackgroundTransparency = 1
+		Button.Size = UDim2.new(1, 0, 1, 0)
+		Button.Text = ""
+		Button.ZIndex = 15
+
+		local isOpen = false
+
+		local function buildOptions()
+			for _, child in ipairs(OptionHolder:GetChildren()) do
+				if child:IsA("TextButton") then
+					child:Destroy()
+				end
+			end
+			
+			for i, opt in ipairs(options) do
+				local OptBtn = Instance.new("TextButton")
+				local UICorner_Opt = Instance.new("UICorner")
+
+				OptBtn.Name = opt
+				OptBtn.Parent = OptionHolder
+				OptBtn.BackgroundColor3 = Color3.fromRGB(20, 21, 28)
+				OptBtn.BorderSizePixel = 0
+				OptBtn.Size = UDim2.new(0.96, 0, 0, 32)
+				OptBtn.Font = Enum.Font.GothamMedium
+				OptBtn.Text = "   " .. opt
+				OptBtn.TextColor3 = TextMuted
+				OptBtn.TextSize = 13
+				OptBtn.TextXAlignment = Enum.TextXAlignment.Left
+				OptBtn.ZIndex = 25
+
+				UICorner_Opt.CornerRadius = UDim.new(0, 6)
+				UICorner_Opt.Parent = OptBtn
+
+				OptBtn.MouseButton1Click:Connect(function()
+					SelectedLabel.Text = opt
+					isOpen = false
+					TweenService:Create(OptionHolder, TweenInfo.new(0.2), {Size = UDim2.new(1, 0, 0, 0)}):Play()
+					TweenService:Create(ArrowLabel, TweenInfo.new(0.2), {Rotation = 0}):Play()
+					task.delay(0.2, function() OptionHolder.Visible = false end)
+					if callback then callback(opt) end
+				end)
+
+				OptBtn.MouseEnter:Connect(function()
+					TweenService:Create(OptBtn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(30, 30, 42)}):Play()
+					TweenService:Create(OptBtn, TweenInfo.new(0.1), {TextColor3 = TextMain}):Play()
+				end)
+				OptBtn.MouseLeave:Connect(function()
+					TweenService:Create(OptBtn, TweenInfo.new(0.1), {BackgroundColor3 = Color3.fromRGB(20, 21, 28)}):Play()
+					TweenService:Create(OptBtn, TweenInfo.new(0.1), {TextColor3 = TextMuted}):Play()
+				end)
+			end
+		end
+
+		buildOptions()
+		local totalHeight = #options * 34 + 6
+
+		Button.MouseButton1Click:Connect(function()
+			isOpen = not isOpen
+			if isOpen then
+				OptionHolder.Visible = true
+				OptionHolder.Size = UDim2.new(1, 0, 0, 0)
+				TweenService:Create(OptionHolder, TweenInfo.new(0.2, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, totalHeight)}):Play()
+				TweenService:Create(ArrowLabel, TweenInfo.new(0.2), {Rotation = 180}):Play()
+			else
+				TweenService:Create(OptionHolder, TweenInfo.new(0.2, Enum.EasingStyle.Quart), {Size = UDim2.new(1, 0, 0, 0)}):Play()
+				TweenService:Create(ArrowLabel, TweenInfo.new(0.2), {Rotation = 0}):Play()
+				task.delay(0.2, function() OptionHolder.Visible = false end)
+			end
+		end)
+
+		DropFrame.MouseEnter:Connect(function()
+			TweenService:Create(DropFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColorHover}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColorHover}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMain}):Play()
+		end)
+
+		DropFrame.MouseLeave:Connect(function()
+			TweenService:Create(DropFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColor}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColor}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMuted}):Play()
+		end)
+
+		local DropdownObject = {}
+		function DropdownObject:Set(value)
+			SelectedLabel.Text = value
+			if callback then callback(value) end
+		end
+		
+		function DropdownObject:Get()
+			return SelectedLabel.Text
+		end
+
+		function DropdownObject:Refresh(newOptions, newCallback)
+			if newCallback then callback = newCallback end
+			options = newOptions
+			buildOptions()
+			totalHeight = #options * 34 + 6
+			SelectedLabel.Text = options[1] or ""
+		end
+
+		return DropdownObject
+	end
+
+	function lib:CreateInput(title, ParentCanvas, placeholder, callback)
+		local InputFrame = Instance.new("Frame")
+		local UICorner_Inp = Instance.new("UICorner")
+		local TitleLabel = Instance.new("TextLabel")
+		local InputBox = Instance.new("TextBox")
+		local UICorner_Box = Instance.new("UICorner")
+
+		InputFrame.Name = "Input"
+		InputFrame.Parent = ParentCanvas
+		InputFrame.BackgroundColor3 = CardColor
+		InputFrame.BackgroundTransparency = 0
+		InputFrame.Size = UDim2.new(0.94, 0, 0, IsMobile and 38 or 44)
+
+		UICorner_Inp.CornerRadius = UDim.new(0, 8)
+		UICorner_Inp.Parent = InputFrame
+		local stroke = addStroke(InputFrame, BorderColor, 1)
+
+		TitleLabel.Name = "Title"
+		TitleLabel.Parent = InputFrame
+		TitleLabel.BackgroundTransparency = 1
+		TitleLabel.Position = UDim2.new(0, 12, 0, 0)
+		TitleLabel.Size = UDim2.new(0.45, 0, 1, 0)
+		TitleLabel.Font = Enum.Font.GothamMedium
+		TitleLabel.Text = title
+		TitleLabel.TextColor3 = TextMuted
+		TitleLabel.TextSize = IsMobile and 13 or 14
+		TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+		InputBox.Name = "InputBox"
+		InputBox.Parent = InputFrame
+		InputBox.BackgroundColor3 = Color3.fromRGB(30, 31, 40)
+		InputBox.BorderSizePixel = 0
+		InputBox.Position = UDim2.new(0.5, 0, 0.5, 0)
+		InputBox.Size = UDim2.new(0.46, 0, 0, IsMobile and 24 or 28)
+		InputBox.AnchorPoint = Vector2.new(0, 0.5)
+		InputBox.Font = Enum.Font.GothamMedium
+		InputBox.PlaceholderText = placeholder or "Enter text..."
+		InputBox.PlaceholderColor3 = Color3.fromRGB(85, 87, 100)
+		InputBox.Text = ""
+		InputBox.TextColor3 = TextMain
+		InputBox.TextSize = 13
+		InputBox.ClearTextOnFocus = false
+
+		UICorner_Box.CornerRadius = UDim.new(0, 6)
+		UICorner_Box.Parent = InputBox
+		local boxStroke = addStroke(InputBox, Color3.fromRGB(45, 46, 58), 1)
+
+		InputBox.Focused:Connect(function()
+			TweenService:Create(InputBox, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(35, 36, 48)}):Play()
+			TweenService:Create(boxStroke, TweenInfo.new(0.2), {Color = AccentColorRight}):Play()
+		end)
+
+		InputBox.FocusLost:Connect(function(enterPressed)
+			TweenService:Create(InputBox, TweenInfo.new(0.2), {BackgroundColor3 = Color3.fromRGB(30, 31, 40)}):Play()
+			TweenService:Create(boxStroke, TweenInfo.new(0.2), {Color = Color3.fromRGB(45, 46, 58)}):Play()
+			if callback then
+				callback(InputBox.Text)
+			end
+		end)
+
+		InputFrame.MouseEnter:Connect(function()
+			TweenService:Create(InputFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColorHover}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColorHover}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMain}):Play()
+		end)
+
+		InputFrame.MouseLeave:Connect(function()
+			TweenService:Create(InputFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColor}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColor}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMuted}):Play()
+		end)
+
+		local InputObject = {}
+		function InputObject:Set(value)
+			InputBox.Text = value
+			if callback then callback(value) end
+		end
+		
+		function InputObject:Get()
+			return InputBox.Text
+		end
+		return InputObject
+	end
+
+	function lib:CreateLabel(title, ParentCanvas)
+		local LabelFrame = Instance.new("Frame")
+		local UICorner_Lbl = Instance.new("UICorner")
+		local TitleLabel = Instance.new("TextLabel")
+
+		LabelFrame.Name = "Label"
+		LabelFrame.Parent = ParentCanvas
+		LabelFrame.BackgroundColor3 = CardColor
+		LabelFrame.BackgroundTransparency = 0
+		LabelFrame.Size = UDim2.new(0.94, 0, 0, IsMobile and 30 or 34)
+
+		UICorner_Lbl.CornerRadius = UDim.new(0, 6)
+		UICorner_Lbl.Parent = LabelFrame
+		local stroke = addStroke(LabelFrame, BorderColor, 1)
+
+		TitleLabel.Name = "Title"
+		TitleLabel.Parent = LabelFrame
+		TitleLabel.BackgroundTransparency = 1
+		TitleLabel.Position = UDim2.new(0, 12, 0, 0)
+		TitleLabel.Size = UDim2.new(1, -24, 1, 0)
+		TitleLabel.Font = Enum.Font.GothamMedium
+		TitleLabel.Text = title
+		TitleLabel.TextColor3 = TextMuted
+		TitleLabel.TextSize = 13
+		TitleLabel.TextXAlignment = Enum.TextXAlignment.Left
+
+		LabelFrame.MouseEnter:Connect(function()
+			TweenService:Create(LabelFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColorHover}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColorHover}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMain}):Play()
+		end)
+
+		LabelFrame.MouseLeave:Connect(function()
+			TweenService:Create(LabelFrame, TweenInfo.new(0.2), {BackgroundColor3 = CardColor}):Play()
+			TweenService:Create(stroke, TweenInfo.new(0.2), {Color = BorderColor}):Play()
+			TweenService:Create(TitleLabel, TweenInfo.new(0.2), {TextColor3 = TextMuted}):Play()
+		end)
+
+		return LabelFrame
+	end
+
+	return lib
+end
+
+return lib
