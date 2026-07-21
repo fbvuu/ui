@@ -175,8 +175,8 @@ function lib:CreateWindow(title)
     AvatarBar.Parent           = Main
     AvatarBar.BackgroundColor3 = T.BG2
     AvatarBar.BorderSizePixel  = 0
-    AvatarBar.AnchorPoint      = Vector2.new(0, 1)
-    AvatarBar.Position         = UDim2.new(0, 0, 1, 0)
+    AvatarBar.AnchorPoint      = Vector2.new(0, 0)
+    AvatarBar.Position         = UDim2.new(0, 0, 1, -AvatarBarH)
     AvatarBar.Size             = UDim2.new(0, NavWidth, 0, AvatarBarH)
 
     -- Square off top corners
