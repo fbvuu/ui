@@ -167,6 +167,102 @@ function lib:CreateWindow(title)
     NavSep.Position         = UDim2.new(0, NavWidth, 0, TopHeight + 1)
     NavSep.Size             = UDim2.new(0, 1, 1, -(TopHeight + 1))
 
+    -- Bottom avatar bar (sits at bottom of the nav column)
+    local AvatarBarH = 52
+    local AvatarBar = Instance.new("Frame")
+    AvatarBar.Name             = "AvatarBar"
+    AvatarBar.Parent           = Main
+    AvatarBar.BackgroundColor3 = T.BG2
+    AvatarBar.BorderSizePixel  = 0
+    AvatarBar.AnchorPoint      = Vector2.new(0, 1)
+    AvatarBar.Position         = UDim2.new(0, 0, 1, 0)
+    AvatarBar.Size             = UDim2.new(0, NavWidth, 0, AvatarBarH)
+
+    -- Square off top corners
+    local AvatarBarFix = Instance.new("Frame")
+    AvatarBarFix.BackgroundColor3 = T.BG2
+    AvatarBarFix.BorderSizePixel  = 0
+    AvatarBarFix.Size             = UDim2.new(1, 0, 0.5, 0)
+    AvatarBarFix.Position         = UDim2.new(0, 0, 0, 0)
+    AvatarBarFix.Parent           = AvatarBar
+
+    local AvatarTopSep = Instance.new("Frame")
+    AvatarTopSep.Parent           = AvatarBar
+    AvatarTopSep.BackgroundColor3 = T.Border
+    AvatarTopSep.BorderSizePixel  = 0
+    AvatarTopSep.Position         = UDim2.new(0, 0, 0, 0)
+    AvatarTopSep.Size             = UDim2.new(1, 0, 0, 1)
+
+    -- Circular clip frame for avatar
+    local AvatarCircle = Instance.new("Frame")
+    AvatarCircle.Name             = "AvatarCircle"
+    AvatarCircle.Parent           = AvatarBar
+    AvatarCircle.BackgroundColor3 = T.Border
+    AvatarCircle.BorderSizePixel  = 0
+    AvatarCircle.AnchorPoint      = Vector2.new(0, 0.5)
+    AvatarCircle.Position         = UDim2.new(0, 8, 0.5, 0)
+    AvatarCircle.Size             = UDim2.new(0, 34, 0, 34)
+    AvatarCircle.ClipsDescendants = true
+    local AvatarCircleCorner = Instance.new("UICorner")
+    AvatarCircleCorner.CornerRadius = UDim.new(1, 0)
+    AvatarCircleCorner.Parent = AvatarCircle
+
+    local AvatarImg = Instance.new("ImageLabel")
+    AvatarImg.Name               = "AvatarImg"
+    AvatarImg.Parent             = AvatarCircle
+    AvatarImg.BackgroundTransparency = 1
+    AvatarImg.Size               = UDim2.new(1, 0, 1, 0)
+    AvatarImg.Image              = ""
+    AvatarImg.ScaleType          = Enum.ScaleType.Crop
+
+    -- Load headshot thumbnail async
+    local Players = game:GetService("Players")
+    local lp = Players.LocalPlayer
+    task.spawn(function()
+        local ok, url = pcall(function()
+            return Players:GetUserThumbnailAsync(
+                lp.UserId,
+                Enum.ThumbnailType.HeadShot,
+                Enum.ThumbnailSize.Size48x48
+            )
+        end)
+        if ok and url then
+            AvatarImg.Image = url
+        end
+    end)
+
+    local WelcomeLbl = Instance.new("TextLabel")
+    WelcomeLbl.Name               = "Welcome"
+    WelcomeLbl.Parent             = AvatarBar
+    WelcomeLbl.BackgroundTransparency = 1
+    WelcomeLbl.AnchorPoint        = Vector2.new(0, 0.5)
+    WelcomeLbl.Position           = UDim2.new(0, 48, 0.5, -7)
+    WelcomeLbl.Size               = UDim2.new(1, -52, 0, 14)
+    WelcomeLbl.Font               = Enum.Font.GothamBold
+    WelcomeLbl.Text               = "Welcome"
+    WelcomeLbl.TextColor3         = T.Dim
+    WelcomeLbl.TextSize           = 9
+    WelcomeLbl.TextXAlignment     = Enum.TextXAlignment.Left
+    WelcomeLbl.TextTruncate       = Enum.TextTruncate.AtEnd
+
+    local UsernameLbl = Instance.new("TextLabel")
+    UsernameLbl.Name               = "Username"
+    UsernameLbl.Parent             = AvatarBar
+    UsernameLbl.BackgroundTransparency = 1
+    UsernameLbl.AnchorPoint        = Vector2.new(0, 0.5)
+    UsernameLbl.Position           = UDim2.new(0, 48, 0.5, 6)
+    UsernameLbl.Size               = UDim2.new(1, -52, 0, 14)
+    UsernameLbl.Font               = Enum.Font.GothamBold
+    UsernameLbl.Text               = lp.Name
+    UsernameLbl.TextColor3         = T.White
+    UsernameLbl.TextSize           = 11
+    UsernameLbl.TextXAlignment     = Enum.TextXAlignment.Left
+    UsernameLbl.TextTruncate       = Enum.TextTruncate.AtEnd
+
+    -- Shrink nav to not overlap avatar bar
+    Nav.Size = UDim2.new(0, NavWidth, 1, -(TopHeight + 1 + AvatarBarH))
+    NavSep.Size = UDim2.new(0, 1, 1, -(TopHeight + 1 + AvatarBarH))
+
     -- Content area
     local ContentContainer = Instance.new("Frame")
     ContentContainer.Name               = "ContentContainer"
