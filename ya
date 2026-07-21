@@ -98,8 +98,8 @@ function lib:CreateWindow(title)
     CloseBtn.Size               = UDim2.new(0, 22, 0, 22)
     CloseBtn.AnchorPoint        = Vector2.new(1, 0.5)
     CloseBtn.Position           = UDim2.new(1, -10, 0.5, 0)
-    CloseBtn.Font               = Enum.Font.GothamBold
-    CloseBtn.Text               = "✕"
+    CloseBtn.Font               = Enum.Font.SourceSansBold
+    CloseBtn.Text               = "X"
     CloseBtn.TextColor3         = T.OffWhite
     CloseBtn.TextSize           = 12
     CloseBtn.AutoButtonColor    = false
@@ -116,10 +116,10 @@ function lib:CreateWindow(title)
     MinBtn.Size               = UDim2.new(0, 22, 0, 22)
     MinBtn.AnchorPoint        = Vector2.new(1, 0.5)
     MinBtn.Position           = UDim2.new(1, -38, 0.5, 0)
-    MinBtn.Font               = Enum.Font.GothamBold
-    MinBtn.Text               = "—"
+    MinBtn.Font               = Enum.Font.SourceSansBold
+    MinBtn.Text               = "-"
     MinBtn.TextColor3         = T.OffWhite
-    MinBtn.TextSize           = 11
+    MinBtn.TextSize           = 20
     MinBtn.AutoButtonColor    = false
     MinBtn.ZIndex             = 4
     Corner(4, MinBtn)
@@ -847,9 +847,9 @@ function lib:CreateWindow(title)
         Arrow.Position           = UDim2.new(1, -8, 0.5, 0)
         Arrow.Size               = UDim2.new(0, 16, 0, 16)
         Arrow.Font               = Enum.Font.GothamBold
-        Arrow.Text               = "⌄"
+        Arrow.Text               = "v"
         Arrow.TextColor3         = T.Dim
-        Arrow.TextSize           = 14
+        Arrow.TextSize           = 12
         Arrow.ZIndex             = 11
 
         local DropHolder = Instance.new("Frame")
