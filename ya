@@ -57,6 +57,7 @@ function lib:CreateWindow(title)
     Main.AnchorPoint        = Vector2.new(0.5, 0.5)
     Main.Position           = UDim2.new(0.5, 0, 0.5, 0)
     Main.Size               = IsMobile and UDim2.new(0.58,0,0.87,0) or UDim2.new(0.54,0,0.56,0)
+    Main.ClipsDescendants   = true
     Corner(10, Main)
     Stroke(1, T.Border, Main)
 
